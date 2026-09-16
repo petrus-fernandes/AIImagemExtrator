@@ -1,0 +1,30 @@
+services:
+  ai-service:
+    build: .
+    image: image-extractor
+    ports:
+      - "8000:8000"
+      - "5678:5678"
+
+    command: >
+      uv run python
+        -Xfrozen_modules=off
+        -m debugpy
+        --listen 0.0.0.0:5678
+        -m uvicorn app.main:app
+        --host 0.0.0.0
+        --port 8000
+
+    volumes:
+      - ./credentials:/credentials
+    environment:
+     GOOGLE_DRIVE_APPLICATION_NAME: Mercadao
+     GOOGLE_CREDENTIALS_PATH: /credentials/drive-service-account.json
+     GOOGLE_DRIVE_MAIN_DIRECTORY: ${GOOGLE_DRIVE_MAIN_DIRECTORY}
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: panfleteiro
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
