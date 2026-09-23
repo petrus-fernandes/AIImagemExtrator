@@ -1,3 +1,5 @@
+import \
+    time
 from contextlib import asynccontextmanager
 import os
 
@@ -11,6 +13,8 @@ from app.services.flyer_processing_service import FlyerProcessingService
 async def lifespan(app: FastAPI):
 
     print("Aplicação iniciando...", flush=True)
+
+    time.sleep(2)
 
     application_name = os.getenv("GOOGLE_DRIVE_APPLICATION_NAME")
 

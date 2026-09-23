@@ -25,17 +25,22 @@ class FlyerProcessingService:
         for market_folder in market_folders:
 
             market = market_folder["name"]
+            print(
+                market,
+                flush=True)
             url_folders = self.drive_service.list_folders(market_folder["id"])
 
             for url_folder in url_folders:
 
                 url = url_folder["name"]
+                print(
+                    url,
+                    flush=True)
                 images = self.drive_service.list_images(url_folder["id"])
 
                 for image in images:
                     print(image, market, url, url_folder["id"], flush=True)
-                    local_file = self.drive_service.download_image(image["id"], image["name"])
-                    #self.process_image(image, market, url, url_folder["id"])
+                    self.process_image(image, market, url, url_folder["id"])
 
     def process_image(
         self,
@@ -58,8 +63,9 @@ class FlyerProcessingService:
 
         try:
 
-            logger.info("Enviando panfleto '%s' para processamento", image_name)
+            logger.info("Enviando panfleto '%s' para processamento ao modelo de AI", image_name)
 
+            """
             response = self.ai_service.process_flyer(
                 local_file,
                 url,
@@ -77,12 +83,9 @@ class FlyerProcessingService:
                 "Validação salva com id %s",
                 flyer_validation.id
             )
+            """
 
-            self.drive_service.move_file(
-                image_id,
-                current_folder_id,
-                self.processed_folder_id
-            )
+            self.send_to_processed_folder(image)
 
             logger.info(
                 "Arquivo '%s' movido para processados",
@@ -106,3 +109,8 @@ class FlyerProcessingService:
                 "Arquivo temporário removido: %s",
                 image_name
             )
+
+    def send_to_processed_folder(self, image, folder_id=None):
+        if not folder_id:
+            folder_id = self.drive_service.get_processed_folder_id()
+        self.drive_service.move_to_folder(image, folder_id)

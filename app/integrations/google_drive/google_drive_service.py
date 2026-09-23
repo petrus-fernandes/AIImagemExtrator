@@ -47,7 +47,7 @@ class GoogleDriveService:
             .files()
             .list(
                 q=query,
-                fields="files(id, name, mimeType)"
+                fields="files(id, name, mimeType, parents)"
             )
             .execute()
         )
@@ -90,3 +90,14 @@ class GoogleDriveService:
             version="v3",
             credentials=self.get_credentials()
         )
+
+    def get_processed_folder_id(self):
+        return os.getenv("GOOGLE_DRIVE_PROCESSED_DIRECTORY")
+
+
+    def move_to_folder(self, arquive, folder_id):
+        self.drive_service.files().update(
+            fileId=arquive["id"],
+            addParents=folder_id,
+            removeParents=arquive["parents"][0]
+        ).execute()

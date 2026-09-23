@@ -21,6 +21,7 @@ services:
      GOOGLE_DRIVE_APPLICATION_NAME: Mercadao
      GOOGLE_CREDENTIALS_PATH: /credentials/drive-service-account.json
      GOOGLE_DRIVE_MAIN_DIRECTORY: ${GOOGLE_DRIVE_MAIN_DIRECTORY}
+     GOOGLE_DRIVE_PROCESSED_DIRECTORY: ${GOOGLE_DRIVE_PROCESSED_DIRECTORY}
 
   postgres:
     image: postgres:17
