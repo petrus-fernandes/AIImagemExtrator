@@ -3,8 +3,11 @@ services:
     build: .
     image: image-extractor
     ports:
-      - "8000:8000"
+      - "8088:8088"
       - "5678:5678"
+
+    networks:
+      - panfleteiro-network
 
     command: >
       uv run python
@@ -18,14 +21,22 @@ services:
     volumes:
       - ./credentials:/credentials
     environment:
+      # Google
      GOOGLE_DRIVE_APPLICATION_NAME: Mercadao
      GOOGLE_CREDENTIALS_PATH: /credentials/drive-service-account.json
      GOOGLE_DRIVE_MAIN_DIRECTORY: ${GOOGLE_DRIVE_MAIN_DIRECTORY}
      GOOGLE_DRIVE_PROCESSED_DIRECTORY: ${GOOGLE_DRIVE_PROCESSED_DIRECTORY}
 
-  postgres:
-    image: postgres:17
-    environment:
-      POSTGRES_DB: panfleteiro
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+     # AI
+     OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+     # Database
+     DATABASE_USER: ${DATABASE_USER}
+     DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+     DATABASE_HOST: ${DATABASE_HOST}
+     DATABASE_PORT: ${DATABASE_PORT}
+     DATABASE_NAME: ${DATABASE_NAME}
+
+networks:
+  panfleteiro-network:
+    external: true
